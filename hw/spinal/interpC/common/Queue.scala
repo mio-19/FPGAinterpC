@@ -15,6 +15,8 @@ case class Queue[Item <: Data](itemType: Item, bufferSize: Int) extends Bundle w
     ???
   }
 
+  def add[T <: Item](item: T): StateT[Unit] = StateT((k, sma)=>addAnd(item){k(())}(sma))
+
   def reclock(clockDomain: ClockDomain): Queue[Item] = ???
 }
 

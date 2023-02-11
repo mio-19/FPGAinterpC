@@ -18,7 +18,7 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
     slave(output)
   }
 
-  def call[T <: Input](arg: T)(doThat: Output => Unit)(implicit stateMachineAccessor: StateMachineAccessor): Unit = {
+  def callAnd[T <: Input](arg: T)(doThat: Output => Unit)(implicit stateMachineAccessor: StateMachineAccessor): Unit = {
     val argCache = Reg(inputType)
     argCache := arg
     val waitData = new State {
@@ -51,6 +51,8 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
       stateMachineAccessor.goto(waitReady)
     }
   }
+
+  def call[T <: Input](arg: T): StateT[Output] = StateT((k, sma)=>callAnd(arg)(k)(sma))
 
   def shared(num: Int): Vector[Method[Input, Output]] = ???
 
