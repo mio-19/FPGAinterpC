@@ -7,4 +7,6 @@ import spinal.lib.fsm.StateMachineAccessor
 case class StateT[T](body: (((T => Unit), StateMachineAccessor) => Unit)) {
   def execute(implicit stateMachineAccessor: StateMachineAccessor): Unit = body({ ignored => () }, stateMachineAccessor)
 
+  def map = ???
+  def flatMap = ???
 }
