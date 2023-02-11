@@ -6,7 +6,7 @@ import spinal.lib.fsm._
 
 case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: Output) extends Bundle with IMasterSlave {
   val input = Stream(inputType)
-  val output = Stream(outputType)
+  val output = Flow(outputType)
 
   override def asMaster(): Unit = {
     slave(input)
@@ -24,9 +24,7 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
     val waitData = new State {
       whenIsActive {
         input.valid := false
-        assert(output.ready)
         when(output.valid) {
-          output.ready := false
           doThat(output.payload)
         }
       }
@@ -34,9 +32,7 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
 
     def whenReady = {
       assert(!input.valid)
-      assert(!output.ready)
       input.valid := true
-      output.ready := true
       input.payload := argCache
       stateMachineAccessor.goto(waitData)
     }
