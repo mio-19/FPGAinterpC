@@ -3,6 +3,7 @@ package interpC.common
 import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
+import scala.annotation.targetName
 
 case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: Output) extends Bundle with IMasterSlave {
   val input = Stream(inputType)
@@ -58,7 +59,9 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
 
   def reclock(clockDomain: ClockDomain): Method[Input, Output] = ???
 
-  protected def whenCalled(doThat: Input => Unit) = ???
+  @targetName("whenCalled1") protected def whenCalled(doThat: Input => Unit)(implicit stateMachineAccessor: StateMachineAccessor) = ???
+
+  protected def whenCalled(doThat: Input => StateT[Unit])(implicit stateMachineAccessor: StateMachineAccessor) = whenCalled(x=>doThat(x).execute)
 
   protected def ret[T <: Output](arg: T) = ???
 }
