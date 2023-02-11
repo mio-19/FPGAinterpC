@@ -55,4 +55,6 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
       stateMachineAccessor.goto(waitReady)
     }
   }
+
+  def shared(num: Int): Vector[Method[Input, Output]] = ???
 }
