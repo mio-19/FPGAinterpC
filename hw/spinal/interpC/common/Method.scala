@@ -54,6 +54,8 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
 
   def shared(num: Int): Vector[Method[Input, Output]] = ???
 
+  def reclock(clockDomain: ClockDomain): Method[Input, Output] = ???
+
   protected def whenCalled(doThat: Input => Unit) = ???
 
   protected def ret[T <: Output](arg: T) = ???
