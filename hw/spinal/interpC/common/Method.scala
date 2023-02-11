@@ -51,9 +51,15 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
       stateMachineAccessor.goto(waitReady)
     }
   }
+
   def shared(num: Int): Vector[Method[Input, Output]] = ???
 
   protected def whenCalled(doThat: Input => Unit) = ???
 
   protected def ret[T <: Output](arg: T) = ???
+}
+
+
+object Method {
+  def parallel[Input <: Data, Output <: Data](xs: Vector[Method[Input, Output]]): Method[Input, Output] = ???
 }
