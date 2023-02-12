@@ -68,4 +68,10 @@ case class Procedure[Input <: Data, Output <: Data](inputType: Input, outputType
 
 object Procedure {
   def parallel[Input <: Data, Output <: Data](xs: Vector[Procedure[Input, Output]]): Procedure[Input, Output] = ???
+
+  def call[Input <: Data, Output <: Data](procedure: Procedure[Input, Output], arg: Input): StateT[Output] = procedure.call(arg)
+
+  final case class Call[Input <: Data, Output <: Data](procedure: Procedure[Input, Output], arg: Input)
+
+  def callParallel(calls: Vector[Call[_, _]]): Vector[_ <: Data] = ???
 }
