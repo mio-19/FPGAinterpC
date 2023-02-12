@@ -3,9 +3,8 @@ package interpC.common
 import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
-import scala.annotation.targetName
 
-case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: Output) extends Bundle with IMasterSlave {
+case class Procedure[Input <: Data, Output <: Data](inputType: Input, outputType: Output) extends Bundle with IMasterSlave {
   val input = Stream(inputType)
   val output = Flow(outputType)
 
@@ -55,18 +54,18 @@ case class Method[Input <: Data, Output <: Data](inputType: Input, outputType: O
 
   def call[T <: Input](arg: T): StateT[Output] = StateT((k, sma)=>callAnd(arg)(k)(sma))
 
-  def shared(num: Int): Vector[Method[Input, Output]] = ???
+  def shared(num: Int): Vector[Procedure[Input, Output]] = ???
 
-  def reclock(clockDomain: ClockDomain): Method[Input, Output] = ???
+  def reclock(clockDomain: ClockDomain): Procedure[Input, Output] = ???
 
-  @targetName("whenCalled1") protected def whenCalled(doThat: Input => Unit)(implicit stateMachineAccessor: StateMachineAccessor) = ???
+  protected def whenCalledDo(doThat: Input => Unit)(implicit stateMachineAccessor: StateMachineAccessor) = ???
 
-  protected def whenCalled(doThat: Input => StateT[Unit])(implicit stateMachineAccessor: StateMachineAccessor) = whenCalled(x=>doThat(x).execute)
+  protected def whenCalled(doThat: Input => StateT[Unit])(implicit stateMachineAccessor: StateMachineAccessor) = whenCalledDo(x=>doThat(x).execute)
 
   protected def ret[T <: Output](arg: T) = ???
 }
 
 
-object Method {
-  def parallel[Input <: Data, Output <: Data](xs: Vector[Method[Input, Output]]): Method[Input, Output] = ???
+object Procedure {
+  def parallel[Input <: Data, Output <: Data](xs: Vector[Procedure[Input, Output]]): Procedure[Input, Output] = ???
 }

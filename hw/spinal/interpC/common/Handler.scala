@@ -4,12 +4,12 @@ import spinal.core._
 import spinal.lib.IMasterSlave
 import spinal.lib.fsm.StateMachineAccessor
 
-case class Queue[Item <: Data](itemType: Item, bufferSize: Int) extends Bundle with IMasterSlave {
+case class Handler[Item <: Data](itemType: Item, bufferSize: Int) extends Bundle with IMasterSlave {
   override def asMaster(): Unit = {
 
   }
 
-  def shared(num: Int): Vector[Queue[Item]] = ???
+  def shared(num: Int): Vector[Handler[Item]] = ???
 
   def addAnd[T <: Item](item: T)(thenDoThat: => Unit)(implicit stateMachineAccessor: StateMachineAccessor): Unit = {
     ???
@@ -17,9 +17,9 @@ case class Queue[Item <: Data](itemType: Item, bufferSize: Int) extends Bundle w
 
   def add[T <: Item](item: T): StateT[Unit] = StateT((k, sma)=>addAnd(item){k(())}(sma))
 
-  def reclock(clockDomain: ClockDomain): Queue[Item] = ???
+  def reclock(clockDomain: ClockDomain): Handler[Item] = ???
 }
 
-object Queue {
-  def parallel[Item <: Data](xs: Vector[Queue[Item]]): Queue[Item] = ???
+object Handler {
+  def parallel[Item <: Data](xs: Vector[Handler[Item]]): Handler[Item] = ???
 }
