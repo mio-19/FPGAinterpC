@@ -58,14 +58,27 @@ case class Procedure[Input <: Data, Output <: Data](inputType: Input, outputType
 
   def reclock(clockDomain: ClockDomain): Procedure[Input, Output] = ???
 
-}
-
-class ProcedureImpl[Input <: Data, Output <: Data](inputType: Input, outputType: Output) extends Procedure[Input, Output](inputType, outputType) {
-  protected def whenCalledDo(doThat: Input => Unit)(implicit stateMachineAccessor: StateMachineAccessor) = ???
-
-  protected def whenCalled(doThat: Input => StateT[Unit])(implicit stateMachineAccessor: StateMachineAccessor) = whenCalledDo(x => doThat(x).execute)
-
-  protected def ret[T <: Output](arg: T) = ???
+  def whenCalled(body: Input => StateT[Output]): StateMachine = {
+    val inputCache = Reg(inputType)
+    new StateMachine {
+      val stateA: State = new State with EntryPoint {
+        whenIsActive {
+          input.ready := true
+          output.valid := false
+          output.payload := outputType.getZero
+          when(input.valid) {
+            inputCache := input.payload
+            input.ready := false
+            body(inputCache).andThen { result =>
+              output.valid := true
+              output.payload := result
+              goto(stateA)
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 object Procedure {

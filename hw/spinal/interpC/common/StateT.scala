@@ -7,6 +7,8 @@ import spinal.lib.fsm._
 case class StateT[T](body: (((T => Unit), StateMachineAccessor) => Unit)) {
   def execute(implicit stateMachineAccessor: StateMachineAccessor): Unit = body({ ignored => () }, stateMachineAccessor)
 
+  def andThen(next: (T => Unit))(implicit stateMachineAccessor: StateMachineAccessor): Unit = body(next, stateMachineAccessor)
+
   def loop: StateMachine = new StateMachine {
     val stateA: State = new State with EntryPoint {
       whenIsActive {
