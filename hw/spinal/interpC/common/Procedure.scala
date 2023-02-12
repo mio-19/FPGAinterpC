@@ -58,13 +58,15 @@ case class Procedure[Input <: Data, Output <: Data](inputType: Input, outputType
 
   def reclock(clockDomain: ClockDomain): Procedure[Input, Output] = ???
 
+}
+
+class ProcedureImpl[Input <: Data, Output <: Data](inputType: Input, outputType: Output) extends Procedure[Input, Output](inputType, outputType) {
   protected def whenCalledDo(doThat: Input => Unit)(implicit stateMachineAccessor: StateMachineAccessor) = ???
 
-  protected def whenCalled(doThat: Input => StateT[Unit])(implicit stateMachineAccessor: StateMachineAccessor) = whenCalledDo(x=>doThat(x).execute)
+  protected def whenCalled(doThat: Input => StateT[Unit])(implicit stateMachineAccessor: StateMachineAccessor) = whenCalledDo(x => doThat(x).execute)
 
   protected def ret[T <: Output](arg: T) = ???
 }
-
 
 object Procedure {
   def parallel[Input <: Data, Output <: Data](xs: Vector[Procedure[Input, Output]]): Procedure[Input, Output] = ???
