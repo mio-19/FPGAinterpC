@@ -17,7 +17,7 @@ case class StateT[T](body: (((T => Unit), StateMachineAccessor) => Unit)) {
     }
   }
 
-  def map = ???
+  def map[U](f: T => U): StateT[U] = StateT((k, sma) => body(x=>k(f(x)), sma))
 
-  def flatMap = ???
+  def flatMap[U](f: T => StateT[U]): StateT[U] = StateT((k, sma) => body((x=>f(x).body(k, sma)), sma))
 }
